@@ -6,6 +6,7 @@ const joiningDatInpute = document.getElementById("employeeJoiningDate");
 const birthDateInput = document.getElementById("employeeBirthDate");
 const addEmployee = document.getElementById("addEmployee");
 const updateEmployee = document.getElementById("updateEmployee");
+const table = document.getElementById("table");
 
 
 displayEmployeeData();
@@ -31,7 +32,6 @@ async function displayEmployeeData() {
     }
 
 }
-
 
 addEmployee.addEventListener("click", async () => {
 
@@ -87,6 +87,124 @@ addEmployee.addEventListener("click", async () => {
 
 });
 
+table.addEventListener("click", (event) => {
+
+    if (event.target.classList.contains("deleteEmployee")) {
+        deleteEmployee(event.target.dataset.id);
+    }
+
+    if (event.target.classList.contains("editEmployee")) {
+        editEmployee(event.target.dataset.id);
+    }
+
+});
+
+async function deleteEmployee(id) {
+
+    let confirmDelete = confirm("Are you sure you want to delete ?");
+
+    if (!confirmDelete) {
+        return;
+    }
+
+    try {
+        await fetch(`${employeeUrl}/${id}`, {
+            method: "DELETE",
+        });
+
+        await displayEmployeeData();
+        pageChange();
+    }
+
+    catch (error) {
+        console.error(error);
+    }
+}
+
+let editId = null;
+
+async function editEmployee(id) {
+
+    pageChange();
+
+    try {
+
+        let response = await fetch(`${employeeUrl}/${id}`);
+
+        if (!response.ok) {
+            throw new Error("Response Is Not Ok !");
+        }
+
+        let data = await response.json();
+
+        editId = id
+
+        document.getElementById("employeeName").value = data.name;
+        document.getElementById("emplyeeDepartment").value = data.department;
+        document.getElementById("employeesalary").value = data.salary;
+        document.getElementById("employeeJoiningDate").value = data.joiningDate;
+        document.getElementById("employeeBirthDate").value = data.birthDate;
+        document.getElementById("addEmployee").style.display = "none";
+        document.getElementById("updateEmployee").style.display = "inline-block";
+
+    }
+
+    catch (error) {
+        console.error(error);
+    }
+
+}
+
+updateEmployee.addEventListener("click", async () => {
+
+    let name = nameInput.value;
+    let department = departmentInput.value;
+    let salary = Number(salaryInput.value);
+    let joiningDate = joiningDatInpute.value;
+    let birthDate = birthDateInput.value;
+
+    if (!isFormVaild(name, salary, joiningDate, birthDate)) {
+        return;
+    }
+
+    name = capitalizeInput(name);
+
+    let updatedEmployeeDetails = {
+        name,
+        department,
+        salary,
+        joiningDate,
+        birthDate
+
+    };
+
+    try {
+        await fetch(`${employeeUrl}/${editId}`, {
+
+            method: "PUT",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(updatedEmployeeDetails)
+        });
+
+        await displayEmployeeData();
+
+        clearForm();
+
+        alert(`${name} is Updated !`);
+
+        document.getElementById("addEmployee").style.display = "inline-block";
+        document.getElementById("updateEmployee").style.display = "none";
+
+    }
+
+    catch (error) {
+        console.error("Could Not Update Data:", error);
+    }
+});
 
 function getTabelData(data) {
 
@@ -165,5 +283,14 @@ function clearForm() {
     document.getElementById("employeesalary").value = "";
     document.getElementById("employeeJoiningDate").value = "";
     document.getElementById("employeeBirthDate").value = "";
+
+}
+
+function pageChange() {
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 
 }
