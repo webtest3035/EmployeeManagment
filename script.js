@@ -7,15 +7,50 @@ const birthDateInput = document.getElementById("employeeBirthDate");
 const addEmployee = document.getElementById("addEmployee");
 const updateEmployee = document.getElementById("updateEmployee");
 const table = document.getElementById("table");
+const employeeSearchInputSubmit = document.getElementById("employeeSearchInputSubmit");
+const DepartmentInputSubmit = document.getElementById("DepartmentInputSubmit");
+const filterButton = document.getElementById("filterButton");
+const pagination = document.getElementById("pagination");
 
+let currentPage = 1;
+let itemsPerPage = 10;
+let allEmployee = 0;
+
+let filters = {
+    sort: ""
+};
+
+let names = {
+    find: ""
+};
+
+let departments = {
+    find: ""
+};
 
 displayEmployeeData();
 
 async function displayEmployeeData() {
 
+    let url = `${employeeUrl}?_page=${currentPage}&_per_page=${itemsPerPage}`;
+
+    if (filters.sort) {
+        url += `&_sort=${filters.sort}`;
+    }
+
+    if (names.find) {
+        url += `&name=${names.find}`;
+    }
+
+    if (departments.find) {
+        url += `&department=${departments.find}`;
+    }
+
+
+
     try {
 
-        const response = await fetch(employeeUrl);
+        const response = await fetch(url);
 
         if (!response.ok) {
             throw new Error("Response Is Not Ok !");
@@ -23,7 +58,16 @@ async function displayEmployeeData() {
 
         let result = await response.json();
 
-        getTabelData(result);
+        let employee = result.data;
+        allEmployee = result.items;
+
+        if (employee.length === 0) {
+            alert("Not Found !");
+            return;
+        }
+
+        getTabelData(employee);
+        createPagination();
 
     }
 
@@ -117,7 +161,7 @@ async function deleteEmployee(id) {
     }
 
     catch (error) {
-        console.error(error);
+        console.error("Could Not Delete Data:", error);
     }
 }
 
@@ -150,7 +194,7 @@ async function editEmployee(id) {
     }
 
     catch (error) {
-        console.error(error);
+        console.error("Could Not Edit Data:", error);
     }
 
 }
@@ -206,13 +250,140 @@ updateEmployee.addEventListener("click", async () => {
     }
 });
 
+employeeSearchInputSubmit.addEventListener("click", () => {
+
+    let input = document.getElementById("employeeSearchInput").value;
+
+    document.getElementById("employeeSearchInput").value = "";
+
+    if (input == "" || !isNaN(input)) {
+        alert("Invalid Search Input !");
+        return;
+    }
+
+    input = capitalizeInput(input);
+
+    names.find = input;
+
+    currentPage = 1;
+
+    displayEmployeeData();
+
+});
+
+DepartmentInputSubmit.addEventListener("click", () => {
+
+    let input = document.getElementById("DepartmentInput").value;
+
+    document.getElementById("DepartmentInput").selectedIndex = 0;
+
+    departments.find = input;
+
+    currentPage = 1;
+
+    displayEmployeeData();
+
+});
+
+filterButton.addEventListener("click", (event) => {
+
+    if (event.target.id === "sortEmployeeATOZ") {
+        sortAToZ();
+    }
+
+    if (event.target.id === "sortEmployeeZTOA") {
+        sortZToA();
+    }
+
+    if (event.target.id === "sortEmployeeSalaryHighToLow") {
+        sortSalaryHighToLow();
+    }
+
+    if (event.target.id === "sortEmployeeSalaryLowToHigh") {
+        sortSalaryLowToHigh();
+    }
+
+    if (event.target.id === "sortEmployeeJoiningfirstToLast") {
+        sortJoiningfirstToLast();
+    }
+
+    if (event.target.id === "sortEmployeeJoiningLastToFirst") {
+        sortJoiningLastToFirst();
+    }
+
+    if (event.target.id === "refresh") {
+        refreshPage();
+    }
+
+});
+
+function sortAToZ() {
+
+    filters.sort = "name";
+
+    currentPage = 1;
+
+    displayEmployeeData();
+}
+
+function sortZToA() {
+
+    filters.sort = "-name";
+
+    currentPage = 1;
+
+    displayEmployeeData();
+
+}
+
+function sortSalaryHighToLow() {
+
+    filters.sort = "salary";
+
+    currentPage = 1;
+
+    displayEmployeeData();
+
+}
+
+function sortSalaryLowToHigh() {
+
+    filters.sort = "-salary";
+
+    currentPage = 1;
+
+    displayEmployeeData();
+
+}
+
+function sortJoiningfirstToLast() {
+
+    filters.sort = "joiningDate";
+
+    currentPage = 1;
+
+    displayEmployeeData();
+
+}
+
+function sortJoiningLastToFirst() {
+
+    filters.sort = "-joiningDate";
+
+    currentPage = 1;
+
+    displayEmployeeData();
+}
+
 function getTabelData(data) {
+
+    let startIndex = (currentPage - 1) * itemsPerPage;
 
 
     let rows = data.map((input, index) => `
 
                 <tr> 
-                     <td>${index + 1}</td>        
+                     <td>${startIndex + index + 1}</td>        
                      <td>${input.id}</td>      
                      <td>${input.name}</td>      
                      <td>${input.department}</td>     
@@ -226,6 +397,69 @@ function getTabelData(data) {
                 </tr> `).join("");
 
     document.getElementById("employeeData").innerHTML = rows;
+}
+
+function createPagination() {
+
+    let totalPages = Math.ceil(allEmployee / itemsPerPage);
+
+    if (currentPage === 1) {
+
+        document.getElementById("previousPage").style.display = "none";
+    }
+    else {
+        document.getElementById("previousPage").style.display = "block";
+    }
+
+    if (currentPage === totalPages) {
+        document.getElementById("nextPage").style.display = "none";
+    }
+    else {
+        document.getElementById("nextPage").style.display = "block";
+    }
+
+}
+
+pagination.addEventListener("click", (event) => {
+
+    if (event.target.id === "previousPage") {
+        previouse();
+    }
+
+    if (event.target.id === "nextPage") {
+        next();
+    }
+})
+
+function pageChange() {
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+function next() {
+
+    let totalPages = Math.ceil(allEmployee / itemsPerPage);
+
+    if (currentPage < totalPages) {
+        currentPage++;
+        displayEmployeeData();
+        clearForm();
+        pageChange();
+    }
+}
+
+function previouse() {
+
+    if (currentPage > 1) {
+        currentPage--;
+        displayEmployeeData();
+        clearForm()
+        pageChange();
+    }
 }
 
 function isFormVaild(name, salary, joiningDate, birthDate) {
@@ -283,6 +517,7 @@ function clearForm() {
     document.getElementById("employeesalary").value = "";
     document.getElementById("employeeJoiningDate").value = "";
     document.getElementById("employeeBirthDate").value = "";
+    editId = null;
 
 }
 
@@ -292,5 +527,21 @@ function pageChange() {
         top: 0,
         behavior: "smooth"
     });
+
+}
+
+function refreshPage() {
+
+    document.getElementById("employeeData").innerHTML = "";
+
+    currentPage = 1;
+
+    filters.sort = "";
+
+    names.find = "";
+
+    departments.find = "";
+
+    displayEmployeeData();
 
 }

@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Managment Page</title>
+    <title>Employee Management Page</title>
 </head>
 
 <body>
     <main>
-        <h1>Employee Managment Page</h1>
+        <h1>Employee Management Page</h1>
 
         <div class="employee-form">
 
@@ -77,6 +77,17 @@
             </div>
         </div>
 
+        <div class="filter-Button" id="filterButton">
+            <label class="filter-label">Filters & Sorting:</label>
+            <button class="filter-button" id="sortEmployeeATOZ">Sort A - Z</button>
+            <button class="filter-button" id="sortEmployeeZTOA">Sort Z - A</button>
+            <button class="filter-button" id="sortEmployeeSalaryHighToLow">Salary High - Low</button>
+            <button class="filter-button" id="sortEmployeeSalaryLowToHigh">Salary Low - High</button>
+            <button class="filter-button" id="sortEmployeeJoiningfirstToLast">Joining first - Last</button>
+            <button class="filter-button" id="sortEmployeeJoiningLastToFirst">Joining Last - First</button>
+            <button class="refresh-button" id="refresh">Refresh</button>
+        </div>
+
 
 
         <table class="employeeTable" id="table">
@@ -96,9 +107,14 @@
             <tbody id="employeeData" class="employeeTable"></tbody>
         </table>
 
+        <div class="pagination" id="pagination">
+            <button class="paginationButtons" id="previousPage">Prev</button>
+            <button class="paginationButtons" id="nextPage">Next</button>
+        </div>
 
+    </main>
 
-        <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>
