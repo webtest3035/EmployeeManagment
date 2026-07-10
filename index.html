@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Managment Page</title>
+</head>
+
+<body>
+    <main>
+        <h1>Employee Managment Page</h1>
+
+        <div class="employee-form">
+
+            <div class="employee-form-one">
+
+                <div class="employee-form-inputs">
+                    <label for="employeeName">Employee Name</label>
+                    <input type="text" id="employeeName" placeholder="Type Here">
+                </div>
+
+                <div class="employee-form-inputs">
+                    <label for="emplyeeDepartment">Employee Department</label>
+                    <select id="emplyeeDepartment">
+                        <option value="HR">HR</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Accounts">Accounts</option>
+                        <option value="IT">IT</option>
+                        <option value="Operations">Operations</option>
+                        <option value="Sales">Sales</option>
+                    </select>
+                </div>
+
+                <div class="employee-form-inputs">
+                    <label for="employeesalary">Employee Salary</label>
+                    <input type="number" id="employeesalary" placeholder="Type Here"> <br>
+
+                </div>
+
+                <div class="employee-form-inputs">
+                    <label for="employeeJoiningDate">Employee Joining Date</label>
+                    <input type="date" id="employeeJoiningDate">
+                </div>
+
+                <div class="employee-form-inputs">
+                    <label for="employeeBirthDate">Employee Birth Date</label>
+                    <input type="date" id="employeeBirthDate">
+                </div>
+
+                <button id="addEmployee">+ Add Employee</button>
+                <button id="updateEmployee">Update Employee</button>
+            </div>
+            <div class="employee-form-two">
+                <div class="employee-form-inputs-Two">
+                    <label for="employeeSearchInput">Search Employee By Name</label>
+                    <div class="employee-form-inputs-Two-inputs">
+                        <input type="text" id="employeeSearchInput" placeholder="Type Here">
+                        <button id="employeeSearchInputSubmit" class="employeeSearchInputSubmit">Search</button>
+                    </div>
+                </div>
+
+                <div class="employee-form-inputs-Two">
+                    <label for="DepartmentInput">Search Employee By Department</label>
+                    <div class="employee-form-inputs-Two-inputs">
+                        <select id="DepartmentInput">
+                            <option value="HR">HR</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Accounts">Accounts</option>
+                            <option value="IT">IT</option>
+                            <option value="Operations">Operations</option>
+                            <option value="Sales">Sales</option>
+                        </select>
+                        <button id="DepartmentInputSubmit" class="DepartmentInputSubmit">Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <table class="employeeTable" id="table">
+            <thead class="employeeTable">
+                <tr>
+                    <th class="employeeTable">Sr. No.</th>
+                    <th class="employeeTable">ID</th>
+                    <th class="employeeTable">Name</th>
+                    <th class="employeeTable">Department</th>
+                    <th class="employeeTable">Salary</th>
+                    <th class="employeeTable">Joining Date</th>
+                    <th class="employeeTable">Date OF Birth</th>
+                    <th class="employeeTable">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="employeeData" class="employeeTable"></tbody>
+        </table>
+</body>
+
+</html>
