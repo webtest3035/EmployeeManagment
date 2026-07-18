@@ -11,7 +11,7 @@ const employeeSearchInputSubmit = document.getElementById("employeeSearchInputSu
 const DepartmentInputSubmit = document.getElementById("DepartmentInputSubmit");
 const filterButton = document.getElementById("filterButton");
 const pagination = document.getElementById("pagination");
-
+const loading = document.getElementById("loading");
 let currentPage = 1;
 let itemsPerPage = 10;
 let allEmployee = 0;
@@ -46,7 +46,7 @@ async function displayEmployeeData() {
         url += `&department=${departments.find}`;
     }
 
-
+    showLoading();
 
     try {
 
@@ -75,6 +75,10 @@ async function displayEmployeeData() {
         console.error("Could Not Fetch Data:", error);
     }
 
+    finally {
+        hideLoading();
+    }
+
 }
 
 addEmployee.addEventListener("click", async () => {
@@ -98,6 +102,8 @@ addEmployee.addEventListener("click", async () => {
         joiningDate,
         birthDate
     };
+
+    showLoading();
 
     try {
 
@@ -129,6 +135,10 @@ addEmployee.addEventListener("click", async () => {
         console.error("Could Not Add Data:", error);
     }
 
+    finally {
+        hideLoading();
+    }
+
 });
 
 table.addEventListener("click", (event) => {
@@ -151,6 +161,8 @@ async function deleteEmployee(id) {
         return;
     }
 
+    showLoading();
+
     try {
         await fetch(`${employeeUrl}/${id}`, {
             method: "DELETE",
@@ -163,12 +175,17 @@ async function deleteEmployee(id) {
     catch (error) {
         console.error("Could Not Delete Data:", error);
     }
+
+    finally {
+        hideLoading();
+    }
 }
 
 let editId = null;
 
 async function editEmployee(id) {
 
+    showLoading();
     pageChange();
 
     try {
@@ -197,6 +214,10 @@ async function editEmployee(id) {
         console.error("Could Not Edit Data:", error);
     }
 
+    finally {
+        hideLoading();
+    }
+
 }
 
 updateEmployee.addEventListener("click", async () => {
@@ -221,6 +242,8 @@ updateEmployee.addEventListener("click", async () => {
         birthDate
 
     };
+
+    showLoading();
 
     try {
         await fetch(`${employeeUrl}/${editId}`, {
@@ -247,6 +270,10 @@ updateEmployee.addEventListener("click", async () => {
 
     catch (error) {
         console.error("Could Not Update Data:", error);
+    }
+
+    finally {
+        hideLoading();
     }
 });
 
@@ -286,6 +313,8 @@ DepartmentInputSubmit.addEventListener("click", () => {
 });
 
 filterButton.addEventListener("click", (event) => {
+
+    clearForm();
 
     if (event.target.id === "sortEmployeeATOZ") {
         sortAToZ();
@@ -518,6 +547,8 @@ function clearForm() {
     document.getElementById("employeeJoiningDate").value = "";
     document.getElementById("employeeBirthDate").value = "";
     editId = null;
+    document.getElementById("employeeSearchInput").value = "";
+    document.getElementById("DepartmentInput").selectedIndex = 0;
 
 }
 
@@ -542,6 +573,18 @@ function refreshPage() {
 
     departments.find = "";
 
+    clearForm();
+
     displayEmployeeData();
 
+}
+
+function showLoading() {
+    loading.style.display = "block";
+    table.style.display = "none"
+}
+
+function hideLoading() {
+    loading.style.display = "none";
+    table.style.display = "table"
 }
