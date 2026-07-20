@@ -7,3 +7,7 @@ Features :- track Employee Details , include = GET , POST , PUT , DELETE , Filte
 Open This Project :- https://webtest3035.github.io/EmployeeManagement/
 
 Language Used :- HTML, CSS, JavaScript
+
+Image :- 
+
+![Home Page](img/Employee-Management-Page.jpeg)
